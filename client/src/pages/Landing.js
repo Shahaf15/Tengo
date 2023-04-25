@@ -19,7 +19,7 @@ const Landing = () => {
           {/* info */}
           <div className='info'>
             <h1>
-              job <span>tracking</span> app
+              Food <span>Share</span> App
             </h1>
             <p>
               Food share app which help the society to reduce food waste.
