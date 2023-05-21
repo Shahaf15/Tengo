@@ -11,8 +11,8 @@ const Wrapper = styled.main`
     img{
       max-width: 100%;
       width: 45vh;
-      margin-top: 5rem;
-      margin-left: -2rem;
+      margin-top: 15%;
+      margin-left: -2%;
     }
   }
   .page {
