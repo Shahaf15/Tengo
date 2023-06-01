@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 const Wrapper = styled.aside`
   display: none;
+  
   @media (min-width: 992px) {
     display: block;
     box-shadow: 1px 0px 0px 0px rgba(0, 0, 0, 0.1);
@@ -12,6 +13,7 @@ const Wrapper = styled.aside`
       width: 250px;
       margin-left: -250px;
       transition: var(--transition);
+      
     }
     .content {
       position: sticky;
@@ -19,12 +21,20 @@ const Wrapper = styled.aside`
     }
     .show-sidebar {
       margin-left: 0;
+      header {
+        padding-left: 2.5rem;
+      }
+      
     }
     header {
       height: 6rem;
       display: flex;
       align-items: center;
-      padding-left: 2.5rem;
+      
+      .logo{
+      max-width: 60%;
+    }
+      
     }
     .nav-links {
       padding-top: 2rem;
@@ -61,6 +71,7 @@ const Wrapper = styled.aside`
     .active .icon {
       color: var(--primary-500);
     }
+    
   }
 `
 export default Wrapper

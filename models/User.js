@@ -26,21 +26,22 @@ const UserSchema = new mongoose.Schema({
         minlength: 6,
         select: false,
     },
-    lasName: {
+    lastName: {
         type: String,
-        maxlength: 20,
         trim: true,
-        default: 'lastName'
+        maxlength: 20,
+        default: 'lastName',
     },
     location: {
         type: String,
         maxlength: 20,
         trim: true,
-        default: 'my location'
+        default: 'my location',
     },
 })
 
 UserSchema.pre('save', async function () {
+    if (!this.isModified('password')) return
     const salt = await bcrypt.genSalt(10)
     this.password = await bcrypt.hash(this.password, salt)
 })
