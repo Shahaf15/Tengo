@@ -1,10 +1,11 @@
-import React from 'react'
+import { AdvsContainer, SearchContainer } from "../../components"
 
 const AllAdvs = () => {
   return (
-    <h1>
-        All Advs Page
-    </h1>
+    <>
+       <SearchContainer />
+       <AdvsContainer />
+    </>
   )
 }
 

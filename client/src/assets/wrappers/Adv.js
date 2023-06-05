@@ -45,11 +45,11 @@ const Wrapper = styled.article`
     background: #fcefc7;
     color: #e9b949;
   }
-  .interview {
-    background: #e0e8f9;
-    color: #647acb;
+  .Open {
+    color: var(--green-dark);
+    background: var(--green-light);
   }
-  .declined {
+  .Close {
     color: #d66a6a;
     background: #ffeeee;
   }
@@ -89,8 +89,8 @@ const Wrapper = styled.article`
     height: 30px;
   }
   .edit-btn {
-    color: var(--green-dark);
-    background: var(--green-light);
+    background: #e0e8f9;
+    color: #647acb;
     margin-right: 0.5rem;
   }
   .delete-btn {

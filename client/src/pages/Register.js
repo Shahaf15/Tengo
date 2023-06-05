@@ -33,7 +33,6 @@ const onSubmit =(e) => {
   const currentUser = {name, email, password}
   if(isMember){
     loginUser(currentUser)
-    console.log('already is member')
   }
   else{
     registerUser(currentUser)

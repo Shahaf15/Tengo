@@ -15,7 +15,19 @@ import {
     LOGOUT_USER,
     UPDATE_USER_BEGIN,
     UPDATE_USER_ERROR,
-    UPDATE_USER_SUCCESS
+    UPDATE_USER_SUCCESS,
+    HANDLE_CHANGE,
+    CLEAR_VALUES,
+    CREATE_ADV_BEGIN,
+    CREATE_ADV_SUCCESS,
+    CREATE_ADV_ERROR,
+    GET_ADVS_BEGIN,
+    GET_ADVS_SUCCESS,
+    SET_EDIT_ADV,
+    DELETE_ADV_BEGIN,
+    EDIT_ADV_BEGIN,
+    EDIT_ADV_SUCCESS,
+    EDIT_ADV_ERROR
 } from "./actions";
 
 
@@ -31,8 +43,20 @@ const initialState = {
     user: user ? JSON.parse(user) : null,
     token: token,
     userLocation: userLocation || '',
-    advLocation: userLocation || '',
     showSidebar: false,
+    isEditing: false,
+    editAdvId: '',
+    title: '',
+    foodType: 'Homemade',
+    details: '',
+    advLocation: userLocation || '',
+    foodTypeOptions: ['Homemade', 'Vegetables', 'Other'],
+    statusOptions: ['Open', 'Close '],
+    status: 'Open',
+    advs: [],
+    totalAdvs: 0,
+    numOfPages: 1,
+    page: 1
 }
 
 const AppContext = React.createContext()
@@ -44,7 +68,7 @@ const AppProvider = ({ children }) => {
     const authFetch = axios.create({
         baseURL: '/api/v1',
     });
-    
+
     // request
     authFetch.interceptors.request.use(function (config) {
         config.headers.Authorization = `Bearer ${state.token}`
@@ -57,13 +81,12 @@ const AppProvider = ({ children }) => {
     //response
     authFetch.interceptors.response.use(function (response) {
         return response;
-      }, function (error) {
-        console.log(error)
-            if (error.response.status === 401) {
-                logoutUser()
-            }
+    }, function (error) {
+        if (error.response.status === 401) {
+            logoutUser()
+        }
         return Promise.reject(error);
-      });
+    });
 
 
 
@@ -144,29 +167,103 @@ const AppProvider = ({ children }) => {
         removeUserFromLocalStorage()
     }
     const updateUser = async (currentUser) => {
-        dispatch({type: UPDATE_USER_BEGIN})
+        dispatch({ type: UPDATE_USER_BEGIN })
         try {
             const { data } = await authFetch.patch('/auth/updateUser', currentUser)
-            
-            const {user, location, token} = data
+
+            const { user, location, token } = data
 
             dispatch({
-                type: UPDATE_USER_SUCCESS, 
-                payload:{user,location,token}
+                type: UPDATE_USER_SUCCESS,
+                payload: { user, location, token }
             })
-            addUserToLocalStorage({user, location, token})
+            addUserToLocalStorage({ user, location, token })
         } catch (error) {
-            if(error.response.status !== 401){
+            if (error.response.status !== 401) {
                 dispatch({
-                    type:UPDATE_USER_ERROR, 
-                    payload:{msg:error.response.data.msg}
+                    type: UPDATE_USER_ERROR,
+                    payload: { msg: error.response.data.msg }
                 })
-            } 
+            }
         }
         clearAlert()
     }
 
-    return <AppContext.Provider value={{ ...state, displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser }}>
+    const handleChange = ({ name, value }) => {
+        dispatch({ type: HANDLE_CHANGE, payload: { name, value } })
+    }
+    const clearValues = () => {
+        dispatch({ type: CLEAR_VALUES })
+    }
+
+    const createAdv = async () => {
+        dispatch({ type: CREATE_ADV_BEGIN })
+        try {
+            const { title, foodType, details, advLocation, status } = state
+            await authFetch.post('/advs', {
+                title,
+                foodType,
+                details,
+                advLocation,
+                status
+            })
+            dispatch({ type: CREATE_ADV_SUCCESS })
+            dispatch({ type: CLEAR_VALUES })
+        } catch (error) {
+            if (error.response.status === 401) return
+            dispatch({ type: CREATE_ADV_ERROR, payload: { msg: error.response.data.msg } })
+
+        }
+        clearAlert()
+    }
+
+    const getAdvs = async () => {
+        let url = `/advs`
+        dispatch({ type: GET_ADVS_BEGIN })
+        try {
+            const { data } = await authFetch(url)
+            const { advs, totalAdvs, numOfPages } = data
+            dispatch({
+                type: GET_ADVS_SUCCESS,
+                payload: {
+                    advs,
+                    totalAdvs,
+                    numOfPages,
+                },
+            })
+
+        } catch (error) {
+            console.log(error.response);
+        }
+        clearAlert()
+    }
+
+    const setEditAdv = (id) => {
+        dispatch({ type: SET_EDIT_ADV, payload: { id } })
+    }
+
+    const editAdv = () => {
+      dispatch({type: EDIT_ADV_BEGIN})
+      try {
+        
+      } catch (error) {
+        
+      }
+    }
+
+    const deleteAdv = async (advId) => {
+        dispatch({type: DELETE_ADV_BEGIN})
+        try {
+            await authFetch.delete(`/advs/${advId}`)
+            getAdvs()
+        } catch (error) {
+            console.log(error.response);
+            //logoutUser()
+        }
+    }
+
+
+    return <AppContext.Provider value={{ ...state, displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser, handleChange, clearValues, createAdv, getAdvs, setEditAdv, deleteAdv, editAdv }}>
         {children}
     </AppContext.Provider>
 }

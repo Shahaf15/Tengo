@@ -29,6 +29,7 @@ const Profile = () => {
         <div className="form-center">
           <FormRow
             type="text"
+            labelText='first name'
             name="name"
             value={name}
             handleChange={(e) => setName(e.target.value)}

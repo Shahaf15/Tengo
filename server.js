@@ -32,7 +32,7 @@ app.get('/api/v1', (req, res) => {
 })
 
 app.use('/api/v1/auth', authRouter)
-app.use('/api/v1/adv', authenticateUser, advRouter)
+app.use('/api/v1/advs', authenticateUser, advRouter)
 
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)
