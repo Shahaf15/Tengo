@@ -212,6 +212,30 @@ const reducer = (state, action) => {
         return { ...state, isLoading: true }
     }
 
+    if (action.type === EDIT_ADV_BEGIN) {
+        return { ...state, isLoading: true }
+    }
+
+    if (action.type === EDIT_ADV_SUCCESS) {
+        return {
+             ...state, 
+             isLoading: false,
+             showAlert: true,
+             alertType: 'success',
+             alertText: 'Advertise Updated!'
+        }
+    }
+
+    if (action.type === EDIT_ADV_ERROR) {
+        return {
+             ...state, 
+             isLoading: false,
+             showAlert: true,
+             alertType: 'danger',
+             alertText: action.payload.msg
+        }
+    }
+
     throw new Error(`no such action : ${action.type}`);
 }
 

@@ -5,10 +5,12 @@ import Adv from './Adv'
 import Wrapper from '../assets/wrappers/AdvsContainer'
 
 const AdvsContainer = () => {
+    // eslint-disable-next-line
     const { getAdvs, advs, isLoading, page, totalAdvs } = useAppContext()
 
     useEffect(() => {
-        getAdvs()
+        getAdvs();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     if (isLoading) {
         return <Loading center />
@@ -31,7 +33,7 @@ const AdvsContainer = () => {
             </h5>
             <div className="advs">
                 {advs.map((adv) => {
-                  return <Adv key={adv._id} {...adv} />
+                    return <Adv key={adv._id} {...adv} />
                 })}
             </div>
             {/* pagination buttons */}

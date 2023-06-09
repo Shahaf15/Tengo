@@ -6,7 +6,7 @@ import Wrapper from '../assets/wrappers/Adv'
 import AdvInfo from './AdvInfo'
 
 
-const Adv = ({ _id, title, advLocaion, status, details, foodType, createdAt }) => {
+const Adv = ({ _id, title, advLocation, status, details, foodType, createdAt }) => {
 
   const { setEditAdv, deleteAdv } = useAppContext()
 
@@ -23,7 +23,7 @@ const Adv = ({ _id, title, advLocaion, status, details, foodType, createdAt }) =
       </header>
       <div className="content">
         <div className="content-center">
-          <AdvInfo icon={<FaLocationArrow />} text={advLocaion} />
+          <AdvInfo icon={<FaLocationArrow />} text={advLocation} />
           <AdvInfo icon={<FaCalendarAlt />} text={date} />
           <AdvInfo icon={<FaBriefcase />} text={details} />
           <div className={`status ${status}`}>{status}</div>

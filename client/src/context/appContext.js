@@ -51,7 +51,7 @@ const initialState = {
     details: '',
     advLocation: userLocation || '',
     foodTypeOptions: ['Homemade', 'Vegetables', 'Other'],
-    statusOptions: ['Open', 'Close '],
+    statusOptions: ['Open', 'Close'],
     status: 'Open',
     advs: [],
     totalAdvs: 0,
@@ -242,17 +242,28 @@ const AppProvider = ({ children }) => {
         dispatch({ type: SET_EDIT_ADV, payload: { id } })
     }
 
-    const editAdv = () => {
-      dispatch({type: EDIT_ADV_BEGIN})
-      try {
-        
-      } catch (error) {
-        
-      }
+    const editAdv = async () => {
+        dispatch({ type: EDIT_ADV_BEGIN })
+        try {
+            const { title, foodType, details, advLocation, status } = state
+            await authFetch.patch(`/advs/${state.editAdvId}`, {
+                title,
+                foodType,
+                details,
+                advLocation,
+                status
+            })
+            dispatch({ type: EDIT_ADV_SUCCESS })
+            dispatch({ type: CLEAR_VALUES })
+        } catch (error) {
+            if (error.response.status === 401) return
+            dispatch({ type: EDIT_ADV_ERROR, payload: { msg: error.response.data.msg } })
+        }
+    clearAlert()
     }
 
     const deleteAdv = async (advId) => {
-        dispatch({type: DELETE_ADV_BEGIN})
+        dispatch({ type: DELETE_ADV_BEGIN })
         try {
             await authFetch.delete(`/advs/${advId}`)
             getAdvs()
