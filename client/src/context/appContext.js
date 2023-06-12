@@ -27,7 +27,11 @@ import {
     DELETE_ADV_BEGIN,
     EDIT_ADV_BEGIN,
     EDIT_ADV_SUCCESS,
-    EDIT_ADV_ERROR
+    EDIT_ADV_ERROR,
+    SHOW_STATS_BEGIN,
+    SHOW_STATS_SUCCESS,
+    CLEAR_FILTERS,
+    CHANGE_PAGE
 } from "./actions";
 
 
@@ -56,7 +60,14 @@ const initialState = {
     advs: [],
     totalAdvs: 0,
     numOfPages: 1,
-    page: 1
+    page: 1,
+    stats: {},
+    monthlyApplications: [],
+    search: '',
+    searchStatus: 'all',
+    searchType: 'all',
+    sort: 'latest',
+    sortOptions: ['latest', 'oldest', 'a-z', 'z-a']
 }
 
 const AppContext = React.createContext()
@@ -218,7 +229,13 @@ const AppProvider = ({ children }) => {
     }
 
     const getAdvs = async () => {
-        let url = `/advs`
+        const { search, searchStatus, searchType, sort, page } = state
+
+        let url = `/advs?page=${page}&status=${searchStatus}&foodType=${searchType}&sort=${sort}`
+        if (search) {
+            url = url + `&search=${search}`
+        }
+
         dispatch({ type: GET_ADVS_BEGIN })
         try {
             const { data } = await authFetch(url)
@@ -259,7 +276,7 @@ const AppProvider = ({ children }) => {
             if (error.response.status === 401) return
             dispatch({ type: EDIT_ADV_ERROR, payload: { msg: error.response.data.msg } })
         }
-    clearAlert()
+        clearAlert()
     }
 
     const deleteAdv = async (advId) => {
@@ -273,8 +290,50 @@ const AppProvider = ({ children }) => {
         }
     }
 
+    const showStats = async () => {
+        dispatch({ type: SHOW_STATS_BEGIN })
+        try {
+            const { data } = await authFetch('/advs/stats')
+            dispatch({
+                type: SHOW_STATS_SUCCESS,
+                payload: {
+                    stats: data.defaultStats,
+                    monthlyApplications: data.monthlyApplications,
+                },
+            })
+        } catch (error) {
+            console.log(error.response)
+            // logoutUser()
+        }
+        clearAlert()
+    }
 
-    return <AppContext.Provider value={{ ...state, displayAlert, registerUser, loginUser, toggleSidebar, logoutUser, updateUser, handleChange, clearValues, createAdv, getAdvs, setEditAdv, deleteAdv, editAdv }}>
+    const clearFilters = () => {
+        dispatch({ type: CLEAR_FILTERS })
+    }
+
+    const changePage = (page) => {
+        dispatch({ type: CHANGE_PAGE, payload: { page } })
+    }
+
+    return <AppContext.Provider value={{
+        ...state,
+        displayAlert,
+        registerUser,
+        loginUser, toggleSidebar,
+        logoutUser,
+        updateUser,
+        handleChange,
+        clearValues,
+        createAdv,
+        getAdvs,
+        setEditAdv,
+        deleteAdv,
+        editAdv,
+        showStats,
+        clearFilters,
+        changePage
+    }}>
         {children}
     </AppContext.Provider>
 }
